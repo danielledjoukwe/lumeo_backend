@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inscription — {{ APP_NAME }}{% endblock %}
+
+{% block content %}
+<section class="min-h-[calc(100vh-57px)] grid grid-cols-1 lg:grid-cols-2">
+
+  <!-- Left: illustration panel (hidden on mobile) -->
+  <div class="hidden lg:flex flex-col justify-between bg-teal-50 border-r border-teal-100 px-12 py-14">
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-widest text-teal-500">{{ APP_NAME }}</span>
+      <h2 class="text-2xl font-bold text-gray-900 mt-3 mb-2 leading-snug">
+        Rejoignez des milliers<br/>de <span class="text-teal-600">collaborations</span>
+      </h2>
+      <p class="text-xs text-gray-500 leading-relaxed max-w-xs">
+        Créez votre compte et commencez à trouver les partenaires qui correspondent vraiment à votre activité.
+      </p>
+    </div>
+    <div class="flex justify-center py-8">
+      <img src="{% static 'images/signup-illustration.svg' %}" class="w-full max-w-xs" alt="Signup illustration"/>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-white border border-teal-100 rounded-xl px-3 py-3 text-center">
+        <p class="text-base font-bold text-teal-600">2 400+</p>
+        <p class="text-xs text-gray-400">Influenceurs</p>
+      </div>
+      <div class="bg-white border border-teal-100 rounded-xl px-3 py-3 text-center">
+        <p class="text-base font-bold text-teal-600">800+</p>
+        <p class="text-xs text-gray-400">Entreprises</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: form -->
+  <div class="flex items-center justify-center px-4 sm:px-8 py-12">
+    <div class="w-full max-w-sm">
+
+      <div class="mb-6">
+        <h1 class="text-xl font-bold text-gray-900 mb-1">Créer un compte</h1>
+        <p class="text-xs text-gray-500">Rejoignez {{ APP_NAME }} gratuitement</p>
+      </div>
+
+      {% if messages %}
+        <div class="flex flex-col gap-2 mb-4">
+          {% for message in messages %}
+            <div class="text-xs px-3 py-2.5 rounded-lg
+              {% if message.tags == 'error' %}bg-red-50 text-red-600 border border-red-100
+              {% else %}bg-teal-50 text-teal-700 border border-teal-100{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" class="flex flex-col gap-3.5">
+        {% csrf_token %}
+
+        <!-- Role selector -->
+        <div class="mb-1">
+          <p class="text-xs font-medium text-gray-700 mb-2">Je suis...</p>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="role-option cursor-pointer">
+              <input type="radio" name="role" value="business" class="sr-only peer" checked/>
+              <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:border-gray-300">
+                <div class="w-7 h-7 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center mx-auto mb-2">
+                  <svg class="w-3.5 h-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 2.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                  </svg>
+                </div>
+                <p class="text-xs font-semibold text-gray-800">Entreprise</p>
+                <p class="text-xs text-gray-400 mt-0.5">Je cherche des influenceurs</p>
+              </div>
+            </label>
+            <label class="role-option cursor-pointer">
+              <input type="radio" name="role" value="influencer" class="sr-only peer"/>
+              <div class="border border-gray-200 rounded-lg p-3 text-center peer-checked:border-teal-500 peer-checked:bg-teal-50 transition-all hover:border-gray-300">
+                <div class="w-7 h-7 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center mx-auto mb-2">
+                  <svg class="w-3.5 h-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                  </svg>
+                </div>
+                <p class="text-xs font-semibold text-gray-800">Influenceur</p>
+                <p class="text-xs text-gray-400 mt-0.5">Je propose mes services</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Prénom</label>
+            <input
+              type="text"
+              name="first_name"
+              placeholder="Jean"
+              class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-50 transition-all placeholder-gray-300"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Nom</label>
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Dupont"
+              class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-50 transition-all placeholder-gray-300"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1.5">Adresse e-mail</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="vous@exemple.com"
+            class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-50 transition-all placeholder-gray-300"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1.5">Mot de passe</label>
+          <input
+            type="password"
+            name="password1"
+            placeholder="Min. 8 caractères"
+            class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-50 transition-all placeholder-gray-300"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1.5">Confirmer le mot de passe</label>
+          <input
+            type="password"
+            name="password2"
+            placeholder="••••••••"
+            class="w-full text-xs border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-50 transition-all placeholder-gray-300"
+            required
+          />
+        </div>
+
+        <div class="flex items-start gap-2 mt-1">
+          <input type="checkbox" id="terms" name="terms" class="w-3.5 h-3.5 accent-teal-600 mt-0.5 shrink-0" required/>
+          <label for="terms" class="text-xs text-gray-500 leading-relaxed">
+            J'accepte les <a href="#" class="text-teal-600 hover:underline">conditions d'utilisation</a> et la <a href="#" class="text-teal-600 hover:underline">politique de confidentialité</a>
+          </label>
+        </div>
+
+        <button
+          id="submit-btn"
+          type="submit"
+          class="w-full bg-teal-600 text-white text-xs font-medium py-2.5 rounded-lg hover:bg-teal-700 transition-colors mt-1 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <span id="btn-label">Créer mon compte</span>
+          <span id="btn-spinner" class="hidden items-center justify-center gap-2">
+            <svg class="animate-spin w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+            Création en cours...
+          </span>
+        </button>
+
+      </form>
+
+      <p class="text-xs text-center text-gray-400 mt-5">
+        Déjà un compte ?
+        <a href="{% url 'login' %}" class="text-teal-600 font-medium hover:underline">Se connecter</a>
+      </p>
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+  (function () {
+    const form   = document.querySelector('form[method="post"]');
+    const btn    = document.getElementById('submit-btn');
+    const label  = document.getElementById('btn-label');
+    const spinner = document.getElementById('btn-spinner');
+
+    form.addEventListener('submit', function () {
+      // Disable immediately to block double-submit
+      btn.disabled = true;
+      label.classList.add('hidden');
+      spinner.classList.remove('hidden');
+      spinner.classList.add('inline-flex');
+    });
+  })();
+</script>
+{% endblock %}

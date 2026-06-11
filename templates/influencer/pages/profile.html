@@ -1,0 +1,510 @@
+{% extends "../dashboard.html" %}
+{% block title %}Mon profil — Lumeo{% endblock %}
+
+{% block influencer_container %}
+<main class="flex-1 px-4 md:px-7 py-7 overflow-y-auto">
+
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-lg font-semibold text-gray-900">Mon profil</h1>
+      <p class="text-xs text-gray-400 mt-0.5">Ces informations sont visibles par les marques qui consultent votre profil.</p>
+    </div>
+    {% if profile and profile.is_verified %}
+    <span class="self-start sm:self-auto inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Profil vérifié
+    </span>
+    {% endif %}
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium
+        {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-100
+        {% else %}bg-red-50 text-red-600 border border-red-100{% endif %}">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          {% if message.tags == 'success' %}
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          {% else %}
+            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          {% endif %}
+        </svg>
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" action="{% url 'influencer_profile' %}">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- ── LEFT COLUMN ─────────────────────────────────── -->
+      <div class="lg:col-span-1 space-y-5">
+
+        <!-- Avatar card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Photo de profil</p>
+          </div>
+          <div class="px-5 py-5">
+            <div class="flex items-center gap-4">
+              <div class="relative shrink-0">
+                <div id="avatar-preview" class="w-16 h-16 rounded-2xl bg-primary-light flex items-center justify-center overflow-hidden shadow-sm">
+                  {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="avatar" class="w-full h-full object-cover">
+                  {% else %}
+                    <span class="text-primary text-xl font-bold">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</span>
+                  {% endif %}
+                </div>
+                <label for="avatar-input"
+                       class="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-lg flex items-center justify-center shadow-md cursor-pointer hover:bg-primary-dark transition-colors">
+                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                    <circle cx="12" cy="13" r="3"/>
+                  </svg>
+                </label>
+                <input type="file" id="avatar-input" name="avatar" accept="image/*" class="hidden">
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold text-gray-800 truncate">{{ user.full_name }}</p>
+                <p class="text-[11px] text-gray-400 truncate mt-0.5">{{ user.email }}</p>
+                <span class="mt-1.5 inline-flex items-center text-[9px] font-semibold bg-violet-100 text-violet-600 px-2 py-0.5 rounded-full uppercase tracking-wide">Créateur</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-3">JPG, PNG ou WEBP · max 2 Mo</p>
+          </div>
+        </div>
+
+        <!-- ── Categories card — searchable dropdown ───────── -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Niches &amp; domaines</p>
+            <p class="text-[11px] text-gray-400 mt-0.5">Sélectionnez jusqu'à 5 catégories.</p>
+          </div>
+          <div class="px-5 py-4 space-y-3">
+
+            <!-- Selected tags -->
+            <div id="selected-tags" class="flex flex-wrap gap-1.5 min-h-[24px]">
+              {% for cat in selected_categories %}
+              <span class="category-tag inline-flex items-center gap-1 text-[11px] font-medium bg-primary text-white px-2.5 py-1 rounded-lg"
+                    data-id="{{ cat.id }}">
+                {{ cat.name }}
+                <button type="button" onclick="removeCategory(this)"
+                        class="ml-0.5 hover:text-white/70 transition-colors leading-none" style="cursor:pointer;">
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+                <input type="hidden" name="categories" value="{{ cat.id }}">
+              </span>
+              {% endfor %}
+            </div>
+
+            <!-- Search input -->
+            <div class="relative" id="category-search-wrapper">
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none"
+                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
+                </svg>
+                <input type="text" id="category-search-input"
+                       placeholder="Rechercher une catégorie…"
+                       autocomplete="off"
+                       style="padding: 9px 12px 9px 32px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50">
+              </div>
+              <!-- Dropdown results -->
+              <div id="category-dropdown"
+                   class="hidden absolute z-30 mt-1 w-full bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden max-h-48 overflow-y-auto">
+                <div id="category-results" class="py-1"></div>
+              </div>
+            </div>
+
+            <!-- Counter -->
+            <p id="cat-counter" class="text-[10px] text-gray-400">
+              <span id="cat-count">{{ selected_categories|length }}</span>/5 sélectionnées
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT COLUMN ────────────────────────────────── -->
+      <div class="lg:col-span-2 space-y-5">
+
+        <!-- Personal info card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Informations personnelles</p>
+            <p class="text-[11px] text-gray-400 mt-0.5">Votre identité publique sur la plateforme.</p>
+          </div>
+          <div class="px-6 py-5 space-y-4">
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Prénom</label>
+                <input type="text" name="first_name" value="{{ user.first_name }}"
+                       style="padding: 10px 14px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Nom</label>
+                <input type="text" name="last_name" value="{{ user.last_name }}"
+                       style="padding: 10px 14px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Nom d'utilisateur</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">@</span>
+                <input type="text" name="username" value="{{ user.username|default:'' }}"
+                       style="padding: 10px 14px 10px 28px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Bio</label>
+              <textarea name="bio" rows="3" placeholder="Décrivez-vous en quelques mots…"
+                        style="padding: 10px 14px;"
+                        class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none">{{ profile.bio|default:'' }}</textarea>
+              <p class="text-[10px] text-gray-400 mt-1">Visible sur votre profil public. Max 300 caractères.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Téléphone</label>
+                <input type="text" name="phone" value="{{ user.phone|default:'' }}"
+                       placeholder="+33 6 00 00 00 00"
+                       style="padding: 10px 14px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Ville</label>
+                <input type="text" name="city" value="{{ user.city|default:'' }}"
+                       placeholder="Paris"
+                       style="padding: 10px 14px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Pays</label>
+              <input type="text" name="country" value="{{ user.country|default:'' }}"
+                     placeholder="France"
+                     style="padding: 10px 14px;"
+                     class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Social platforms card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Réseaux sociaux</p>
+            <p class="text-[11px] text-gray-400 mt-0.5">Ajoutez vos comptes et renseignez votre audience pour chaque plateforme.</p>
+          </div>
+          <div class="px-6 py-5 space-y-3" id="platforms-list">
+
+            {% for platform in platforms %}
+            <div class="platform-row flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0
+                {% if platform.platform == 'instagram' %}bg-pink-100
+                {% elif platform.platform == 'tiktok' %}bg-gray-900
+                {% elif platform.platform == 'youtube' %}bg-red-100
+                {% elif platform.platform == 'twitter' %}bg-sky-100
+                {% elif platform.platform == 'facebook' %}bg-blue-100
+                {% elif platform.platform == 'linkedin' %}bg-blue-100
+                {% else %}bg-gray-100{% endif %}">
+                <span class="text-sm">
+                  {% if platform.platform == 'instagram' %}📸
+                  {% elif platform.platform == 'tiktok' %}🎵
+                  {% elif platform.platform == 'youtube' %}▶️
+                  {% elif platform.platform == 'twitter' %}🐦
+                  {% elif platform.platform == 'facebook' %}📘
+                  {% elif platform.platform == 'linkedin' %}💼
+                  {% elif platform.platform == 'snapchat' %}👻
+                  {% else %}🔗{% endif %}
+                </span>
+              </div>
+              <input type="hidden" name="platform_id[]" value="{{ platform.id }}">
+              <select name="platform_name[]"
+                      style="padding: 8px 10px;"
+                      class="text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white w-32 shrink-0">
+                <option value="instagram" {% if platform.platform == 'instagram' %}selected{% endif %}>Instagram</option>
+                <option value="tiktok"    {% if platform.platform == 'tiktok' %}selected{% endif %}>TikTok</option>
+                <option value="youtube"   {% if platform.platform == 'youtube' %}selected{% endif %}>YouTube</option>
+                <option value="twitter"   {% if platform.platform == 'twitter' %}selected{% endif %}>Twitter / X</option>
+                <option value="facebook"  {% if platform.platform == 'facebook' %}selected{% endif %}>Facebook</option>
+                <option value="snapchat"  {% if platform.platform == 'snapchat' %}selected{% endif %}>Snapchat</option>
+                <option value="linkedin"  {% if platform.platform == 'linkedin' %}selected{% endif %}>LinkedIn</option>
+                <option value="other"     {% if platform.platform == 'other' %}selected{% endif %}>Autre</option>
+              </select>
+              <input type="url" name="platform_url[]" value="{{ platform.profile_url }}"
+                     placeholder="https://..."
+                     style="padding: 8px 10px;"
+                     class="flex-1 min-w-0 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              <div class="relative shrink-0 w-28">
+                <input type="number" name="platform_followers[]" value="{{ platform.followers }}"
+                       min="0" placeholder="Abonnés"
+                       style="padding: 8px 10px;"
+                       class="w-full text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+              <button type="button" onclick="removePlatform(this)"
+                      class="shrink-0 w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 flex items-center justify-center transition-colors" style="cursor:pointer;">
+                <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            {% endfor %}
+
+            {% if not platforms %}
+            <div id="empty-platforms" class="text-center py-6">
+              <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-2">
+                <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+              </div>
+              <p class="text-xs text-gray-400">Aucun réseau ajouté. Cliquez sur le bouton ci-dessous.</p>
+            </div>
+            {% endif %}
+
+          </div>
+          <div class="px-6 pb-5">
+            <button type="button" onclick="addPlatform()"
+                    style="cursor:pointer;"
+                    class="w-full inline-flex items-center justify-center gap-2 text-xs font-semibold text-primary border border-dashed border-primary/40 bg-primary-light/50 hover:bg-primary-light px-4 py-2.5 rounded-xl transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 4v16m8-8H4"/>
+              </svg>
+              Ajouter un réseau social
+            </button>
+          </div>
+        </div>
+
+        <!-- Save button -->
+        <div class="flex items-center justify-end gap-3 pb-4">
+          <a href="{% url 'influencer_home' %}"
+             class="text-xs font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors">
+            Annuler
+          </a>
+          <button type="submit" id="submit-btn" style="cursor:pointer;"
+                  class="inline-flex items-center gap-2 bg-primary text-white text-xs font-semibold px-6 py-2 rounded-xl hover:bg-primary-dark transition-colors shadow-sm shadow-primary/25">
+            <svg id="btn-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7"/>
+            </svg>
+            <svg id="btn-spinner" class="w-3.5 h-3.5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+            <span id="btn-label">Enregistrer les modifications</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+</main>
+
+<script>
+// ── Avatar preview ──────────────────────────────────────────
+document.getElementById('avatar-input').addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('avatar-preview');
+    preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover" alt="avatar">`;
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── Category searchable dropdown ────────────────────────────
+const SEARCH_URL   = "{% url 'category_search' %}";
+const MAX_CATS     = 5;
+const searchInput  = document.getElementById('category-search-input');
+const dropdown     = document.getElementById('category-dropdown');
+const resultsBox   = document.getElementById('category-results');
+const tagsBox      = document.getElementById('selected-tags');
+const catCountEl   = document.getElementById('cat-count');
+
+let debounceTimer = null;
+
+function getSelectedIds() {
+  return [...tagsBox.querySelectorAll('.category-tag')].map(t => t.dataset.id);
+}
+
+function updateCounter() {
+  catCountEl.textContent = getSelectedIds().length;
+}
+
+function addCategory(id, name) {
+  const ids = getSelectedIds();
+  if (ids.includes(id) || ids.length >= MAX_CATS) return;
+
+  const tag = document.createElement('span');
+  tag.className = 'category-tag inline-flex items-center gap-1 text-[11px] font-medium bg-primary text-white px-2.5 py-1 rounded-lg';
+  tag.dataset.id = id;
+  tag.innerHTML = `
+    ${name}
+    <button type="button" onclick="removeCategory(this)"
+            class="ml-0.5 hover:text-white/70 transition-colors leading-none" style="cursor:pointer;">
+      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+        <path d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    <input type="hidden" name="categories" value="${id}">
+  `;
+  tagsBox.appendChild(tag);
+  updateCounter();
+  closeDropdown();
+  searchInput.value = '';
+}
+
+function removeCategory(btn) {
+  btn.closest('.category-tag').remove();
+  updateCounter();
+}
+
+function closeDropdown() {
+  dropdown.classList.add('hidden');
+  resultsBox.innerHTML = '';
+}
+
+function renderResults(items) {
+  const selected = getSelectedIds();
+  if (!items.length) {
+    resultsBox.innerHTML = '<p class="text-[11px] text-gray-400 px-3 py-2">Aucun résultat.</p>';
+    return;
+  }
+  resultsBox.innerHTML = items.map(item => {
+    const alreadyIn = selected.includes(item.id);
+    return `
+      <button type="button"
+              onclick="addCategory('${item.id}', '${item.name.replace(/'/g, "\\'")}')"
+              ${alreadyIn ? 'disabled' : ''}
+              class="w-full text-left px-3 py-2 text-xs transition-colors
+                     ${alreadyIn
+                       ? 'text-gray-300 cursor-not-allowed'
+                       : 'text-gray-700 hover:bg-primary/5 hover:text-primary cursor-pointer'}">
+        ${item.name}
+        ${alreadyIn ? '<span class="text-[10px] text-gray-300 ml-1">✓</span>' : ''}
+      </button>`;
+  }).join('');
+}
+
+async function fetchCategories(q) {
+  const url = `${SEARCH_URL}?q=${encodeURIComponent(q)}`;
+  const res  = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+  const data = await res.json();
+  return data.results || [];
+}
+
+searchInput.addEventListener('focus', async () => {
+  const items = await fetchCategories('');
+  renderResults(items);
+  dropdown.classList.remove('hidden');
+});
+
+searchInput.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    const items = await fetchCategories(searchInput.value.trim());
+    renderResults(items);
+    dropdown.classList.remove('hidden');
+  }, 220);
+});
+
+// Close on outside click
+document.addEventListener('click', e => {
+  if (!document.getElementById('category-search-wrapper').contains(e.target)) {
+    closeDropdown();
+  }
+});
+
+// ── Platform rows ───────────────────────────────────────────
+function addPlatform() {
+  const empty = document.getElementById('empty-platforms');
+  if (empty) empty.remove();
+
+  const row = document.createElement('div');
+  row.className = 'platform-row flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100';
+  row.innerHTML = `
+    <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 platform-icon">
+      <span class="text-sm">🔗</span>
+    </div>
+    <input type="hidden" name="platform_id[]" value="">
+    <select name="platform_name[]" onchange="updateIcon(this)"
+            style="padding: 8px 10px;"
+            class="text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white w-32 shrink-0">
+      <option value="instagram">Instagram</option>
+      <option value="tiktok">TikTok</option>
+      <option value="youtube">YouTube</option>
+      <option value="twitter">Twitter / X</option>
+      <option value="facebook">Facebook</option>
+      <option value="snapchat">Snapchat</option>
+      <option value="linkedin">LinkedIn</option>
+      <option value="other">Autre</option>
+    </select>
+    <input type="url" name="platform_url[]" placeholder="https://..."
+           style="padding: 8px 10px;"
+           class="flex-1 min-w-0 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+    <input type="number" name="platform_followers[]" min="0" placeholder="Abonnés"
+           style="padding: 8px 10px;"
+           class="w-28 shrink-0 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+    <button type="button" onclick="removePlatform(this)"
+            class="shrink-0 w-7 h-7 rounded-lg bg-red-50 hover:bg-red-100 flex items-center justify-center transition-colors" style="cursor:pointer;">
+      <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>`;
+  document.getElementById('platforms-list').appendChild(row);
+}
+
+function removePlatform(btn) {
+  btn.closest('.platform-row').remove();
+  const list = document.getElementById('platforms-list');
+  if (!list.querySelector('.platform-row')) {
+    const empty = document.createElement('div');
+    empty.id = 'empty-platforms';
+    empty.className = 'text-center py-6';
+    empty.innerHTML = `
+      <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-2">
+        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+        </svg>
+      </div>
+      <p class="text-xs text-gray-400">Aucun réseau ajouté. Cliquez sur le bouton ci-dessous.</p>`;
+    list.appendChild(empty);
+  }
+}
+
+function updateIcon(select) {
+  const emoji = { instagram:'📸', tiktok:'🎵', youtube:'▶️', twitter:'🐦', facebook:'📘', snapchat:'👻', linkedin:'💼', other:'🔗' };
+  const icon = select.closest('.platform-row').querySelector('.platform-icon span');
+  if (icon) icon.textContent = emoji[select.value] || '🔗';
+}
+
+// ── Submit loading state ────────────────────────────────────
+document.querySelector('form').addEventListener('submit', function () {
+  const btn     = document.getElementById('submit-btn');
+  const icon    = document.getElementById('btn-icon');
+  const spinner = document.getElementById('btn-spinner');
+  const label   = document.getElementById('btn-label');
+  btn.disabled      = true;
+  btn.style.opacity = '0.75';
+  btn.style.cursor  = 'not-allowed';
+  icon.classList.add('hidden');
+  spinner.classList.remove('hidden');
+  label.textContent = 'Enregistrement…';
+});
+</script>
+{% endblock influencer_container %}

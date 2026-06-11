@@ -1,0 +1,50 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Mon espace — Lumeo{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-gray-50 font-sans">
+
+  <!-- ══════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════ -->
+    {% include "./components/sidebar.html" %}
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm hidden md:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- ══════════════════════════════════════════════
+       MAIN AREA
+  ══════════════════════════════════════════════ -->
+  <div class="flex-1 md:ml-60 min-w-0 flex flex-col">
+
+    <!-- Top bar -->
+      {% include "./components/header.html" %}
+
+    <!-- ── Page content ────────────────────────────────── -->
+    {% block influencer_container %}
+    
+    {% endblock influencer_container %}
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  }
+
+  function toggleProfile() {
+    document.getElementById('profile-dropdown').classList.toggle('hidden');
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('profile-menu');
+    const dropdown = document.getElementById('profile-dropdown');
+    if (menu && !menu.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+</script>
+{% endblock %}

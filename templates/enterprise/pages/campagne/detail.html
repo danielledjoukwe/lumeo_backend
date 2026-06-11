@@ -1,0 +1,242 @@
+{% extends "enterprise/dashboard.html" %}
+
+{% block enterprise_container %}
+<main class="flex-1 px-4 md:px-7 py-7 overflow-y-auto">
+
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+    <div class="flex items-center gap-3">
+      <a href="{% url 'campaign_list' %}"
+         class="w-8 h-8 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+      </a>
+      <div>
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <h1 class="text-lg font-semibold text-gray-900">{{ campaign.title }}</h1>
+          <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full
+            {% if campaign.status == 'draft' %}bg-gray-100 text-gray-500
+            {% elif campaign.status == 'open' %}bg-primary-light text-primary
+            {% elif campaign.status == 'in_progress' %}bg-emerald-50 text-emerald-700
+            {% elif campaign.status == 'completed' %}bg-violet-50 text-violet-700
+            {% elif campaign.status == 'cancelled' %}bg-red-50 text-red-500{% endif %}">
+            <span class="w-1.5 h-1.5 rounded-full
+              {% if campaign.status == 'draft' %}bg-gray-400
+              {% elif campaign.status == 'open' %}bg-primary
+              {% elif campaign.status == 'in_progress' %}bg-emerald-500
+              {% elif campaign.status == 'completed' %}bg-violet-500
+              {% elif campaign.status == 'cancelled' %}bg-red-400{% endif %}"></span>
+            {{ campaign.get_status_display }}
+          </span>
+        </div>
+        <p class="text-xs text-gray-400 mt-0.5">Créée le {{ campaign.created_at|date:"d M Y" }}</p>
+      </div>
+    </div>
+
+    <!-- Header actions -->
+    <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+      {% if campaign.status == 'draft' %}
+      <form method="POST" action="{% url 'campaign_publish' campaign.pk %}">
+        {% csrf_token %}
+        <button type="submit"
+                class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm shadow-primary/25 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
+          </svg>
+          Publier
+        </button>
+      </form>
+      {% elif campaign.status == 'open' %}
+      <form method="POST" action="{% url 'campaign_unpublish' campaign.pk %}">
+        {% csrf_token %}
+        <button type="submit"
+                class="inline-flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium px-4 py-2 rounded-xl transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+          </svg>
+          Dépublier
+        </button>
+      </form>
+      {% endif %}
+      <a href="{% url 'campaign_edit' campaign.pk %}"
+         class="inline-flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium px-4 py-2 rounded-xl transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        Modifier
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium
+        {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-100
+        {% else %}bg-red-50 text-red-600 border border-red-100{% endif %}">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- ── LEFT / MAIN ── -->
+    <div class="lg:col-span-2 space-y-5">
+
+      <!-- Description -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-50">
+          <p class="text-xs font-semibold text-gray-800">Description de la campagne</p>
+        </div>
+        <div class="px-6 py-5">
+          <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{{ campaign.description }}</p>
+        </div>
+      </div>
+
+      <!-- Deliverables brief -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2">
+          <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+          </svg>
+          <p class="text-xs font-semibold text-gray-800">Brief des livrables</p>
+        </div>
+        <div class="px-6 py-5">
+          <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{{ campaign.deliverables_brief }}</p>
+        </div>
+      </div>
+
+      <!-- Applications placeholder -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+          <div class="flex items-center gap-2">
+            <p class="text-xs font-semibold text-gray-800">Candidatures</p>
+            <span class="bg-gray-100 text-gray-400 text-[9px] font-bold rounded-full px-1.5 py-0.5">0</span>
+          </div>
+        </div>
+        <div class="px-6 py-10 flex flex-col items-center text-center gap-2">
+          <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center mb-1">
+            <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <p class="text-xs font-semibold text-gray-500">Aucune candidature pour l'instant</p>
+          <p class="text-[10px] text-gray-400 max-w-xs">
+            {% if campaign.status == 'draft' %}
+              Publiez la campagne pour que les créateurs puissent postuler.
+            {% else %}
+              Les candidatures apparaîtront ici dès que des créateurs postuleront.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT / SIDEBAR ── -->
+    <div class="lg:col-span-1 space-y-5">
+
+      <!-- Key info -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-50">
+          <p class="text-xs font-semibold text-gray-800">Informations clés</p>
+        </div>
+        <div class="px-5 py-4 space-y-3.5">
+
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400">Budget</p>
+              <p class="text-xs font-semibold text-gray-800">{{ campaign.budget }} €</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400">Date limite</p>
+              <p class="text-xs font-semibold text-gray-800">{{ campaign.deadline|date:"d M Y" }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400">Influenceurs recherchés</p>
+              <p class="text-xs font-semibold text-gray-800">{{ campaign.max_influencers }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400">Dernière mise à jour</p>
+              <p class="text-xs font-semibold text-gray-800">{{ campaign.updated_at|date:"d M Y" }}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Target categories -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-50">
+          <p class="text-xs font-semibold text-gray-800">Catégories ciblées</p>
+        </div>
+        <div class="px-5 py-4">
+          {% if campaign.target_categories.exists %}
+          <div class="flex flex-wrap gap-1.5">
+            {% for cat in campaign.target_categories.all %}
+            <span class="inline-flex items-center text-[10px] font-medium bg-primary-light text-primary px-2.5 py-1 rounded-full">
+              {{ cat.name }}
+            </span>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="text-[11px] text-gray-400">Aucune catégorie définie.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="bg-white rounded-2xl border border-red-100 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-red-50">
+          <p class="text-xs font-semibold text-red-500">Zone de danger</p>
+        </div>
+        <div class="px-5 py-4">
+          <p class="text-[11px] text-gray-400 mb-3">La suppression est définitive et irréversible.</p>
+          <form method="POST" action="{% url 'campaign_delete' campaign.pk %}"
+                onsubmit="return confirm('Supprimer définitivement cette campagne ?');">
+            {% csrf_token %}
+            <button type="submit"
+                    class="w-full text-center text-xs font-semibold text-red-500 border border-red-200 hover:bg-red-50 px-4 py-2 rounded-xl transition-colors">
+              Supprimer la campagne
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+{% endblock enterprise_container %}

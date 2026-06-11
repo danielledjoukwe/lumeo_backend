@@ -1,0 +1,248 @@
+{% extends "../dashboard.html" %}
+
+
+{% block admin_dashboard_content %}
+
+<main class="flex-1 px-4 md:px-7 py-7 overflow-y-auto">
+
+      <!-- Greeting -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-lg font-semibold text-gray-900">Console Super Admin 🛠️</h1>
+          <p class="text-xs text-gray-400 mt-0.5">Statistiques générales du système, utilisateurs, sécurité et flux financiers.</p>
+        </div>
+      </div>
+
+      <!-- ── STAT CARDS ──────────────────────────────────── -->
+      <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-7">
+
+        <!-- Volume Financier Total -->
+        <div class="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-5 text-white shadow-md shadow-primary/25 hover:-translate-y-0.5 transition-all duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center">
+              <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+              </svg>
+            </div>
+            <span class="text-[9px] font-semibold bg-white/20 text-white px-1.5 py-0.5 rounded-full uppercase tracking-wide">Volume GMV</span>
+          </div>
+          <p class="text-2xl font-semibold mb-0.5">24 850 €</p>
+          <p class="text-[11px] text-teal-100">Transité ce mois-ci</p>
+        </div>
+
+        <!-- Total Créateurs -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center">
+              <svg class="w-4.5 h-4.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+            </div>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-primary bg-primary-light px-1.5 py-0.5 rounded-full">
+              Créateurs
+            </span>
+          </div>
+          <p class="text-2xl font-semibold text-gray-900 mb-0.5">1 420</p>
+          <p class="text-[11px] text-gray-400 font-medium">Créateurs enregistrés</p>
+        </div>
+
+        <!-- Total Entreprises -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+              <svg class="w-4.5 h-4.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+              Entreprises
+            </span>
+          </div>
+          <p class="text-2xl font-semibold text-gray-900 mb-0.5">380</p>
+          <p class="text-[11px] text-gray-400 font-medium">Entreprises partenaires</p>
+        </div>
+
+        <!-- Litiges Actifs -->
+        <div class="bg-white rounded-2xl border border-red-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
+              <svg class="w-4.5 h-4.5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-full">
+              Litiges
+            </span>
+          </div>
+          <p class="text-2xl font-semibold text-gray-900 mb-0.5">2</p>
+          <p class="text-[11px] text-gray-400 font-medium">Cas ouverts à traiter</p>
+        </div>
+
+      </div>
+
+      <!-- ── TWO-COLUMN ROW ───────────────────────────────── -->
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-7">
+
+        <!-- Demandes de validation de profil (3/5) -->
+        <div class="lg:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold text-gray-800">Profils en attente de vérification</span>
+              <span class="bg-amber-100 text-amber-700 text-[9px] font-bold rounded-full px-1.5 py-0.5">3</span>
+            </div>
+            <a href="#" class="text-[11px] text-primary font-medium hover:underline">Voir tout →</a>
+          </div>
+
+          <div class="divide-y divide-gray-50">
+            <!-- Créateur en attente -->
+            <div class="px-5 py-4 hover:bg-gray-50/60 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center text-primary text-[10px] font-bold shrink-0 shadow-sm">EL</div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs font-semibold text-gray-800">Emma Laurent</p>
+                    <span class="text-[9px] bg-primary-light text-primary font-semibold px-1.5 py-0.5 rounded-full">Créateur</span>
+                  </div>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Niche: Voyage & Outdoor · 145K Abonnés (Instagram)</p>
+                </div>
+                <div class="flex gap-1.5 shrink-0">
+                  <button class="text-[10px] font-semibold border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Rejeter</button>
+                  <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors">Vérifier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Entreprise en attente -->
+            <div class="px-5 py-4 hover:bg-gray-50/60 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700 text-[10px] font-bold shrink-0 shadow-sm">KS</div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs font-semibold text-gray-800">Keto Foods Inc.</p>
+                    <span class="text-[9px] bg-emerald-50 text-emerald-600 font-semibold px-1.5 py-0.5 rounded-full">Entreprise</span>
+                  </div>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Niche: Nutrition saine · N° SIRET validé</p>
+                </div>
+                <div class="flex gap-1.5 shrink-0">
+                  <button class="text-[10px] font-semibold border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Rejeter</button>
+                  <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors">Vérifier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Créateur en attente 2 -->
+            <div class="px-5 py-4 hover:bg-gray-50/60 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center text-primary text-[10px] font-bold shrink-0 shadow-sm">JV</div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs font-semibold text-gray-800">Julien Vanz</p>
+                    <span class="text-[9px] bg-primary-light text-primary font-semibold px-1.5 py-0.5 rounded-full">Créateur</span>
+                  </div>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Niche: Technologie & Informatique · 82K Abonnés (YouTube)</p>
+                </div>
+                <div class="flex gap-1.5 shrink-0">
+                  <button class="text-[10px] font-semibold border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Rejeter</button>
+                  <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors">Vérifier</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Répartition & Stats Système (2/5) -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50 shrink-0">
+            <span class="text-xs font-semibold text-gray-800">Indicateurs plateforme</span>
+          </div>
+          <div class="p-5 flex-1 space-y-4">
+            <!-- bar stat -->
+            <div>
+              <div class="flex items-center justify-between text-[11px] font-semibold text-gray-700 mb-1.5">
+                <span>Ration Créateurs / Entreprises</span>
+                <span>78% / 22%</span>
+              </div>
+              <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden flex">
+                <div class="h-full bg-primary" style="width: 78%"></div>
+                <div class="h-full bg-emerald-500" style="width: 22%"></div>
+              </div>
+            </div>
+
+            <!-- text stats -->
+            <div class="pt-2 divide-y divide-gray-50 space-y-3 text-xs">
+              <div class="flex justify-between py-1">
+                <span class="text-gray-400">Total campagnes publiées</span>
+                <span class="font-semibold text-gray-800">142</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-gray-400">Taux de succès des contrats</span>
+                <span class="font-semibold text-emerald-600">97.8%</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-gray-400">Volume de litiges résolus</span>
+                <span class="font-semibold text-gray-800">45</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-gray-400">Fonds actuellement en escrow</span>
+                <span class="font-semibold text-gray-800">4 820 €</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── DERNIERS LITIGES SIGNALÉS ──────────────────────── -->
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-7">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+          <div>
+            <span class="text-xs font-semibold text-gray-800">Litiges signalés</span>
+            <p class="text-[10px] text-gray-400 mt-0.5">Nécessite la médiation ou arbitrage d'un administrateur</p>
+          </div>
+          <span class="bg-red-100 text-red-600 text-[9px] font-bold rounded-full px-1.5 py-0.5">2 Actifs</span>
+        </div>
+
+        <div class="divide-y divide-gray-50">
+          <!-- litige row -->
+          <div class="px-5 py-4 hover:bg-gray-50/60 transition-colors">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-500 text-[10px] font-bold shrink-0">L1</div>
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-semibold text-gray-800">Non-livraison des stories demandées</p>
+                <p class="text-[10px] text-gray-400 mt-0.5">Litige #1820 · Signaleur: Nike Brand (Entreprise) · Contre: Sophie M. (Créateur)</p>
+              </div>
+              <span class="text-xs font-bold text-gray-900 shrink-0">600 € bloqués</span>
+            </div>
+            <p class="text-[10px] text-gray-500 bg-gray-50 p-2.5 rounded-lg mb-3 leading-relaxed">
+              "L'influenceuse a posté une seule story au lieu des deux promises dans le contrat. Elle ne répond plus aux messages depuis 48h."
+            </p>
+            <div class="flex gap-2">
+              <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20">Arbitrer & Résoudre</button>
+              <button class="text-[10px] font-medium border border-gray-200 text-gray-500 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Voir les messages</button>
+            </div>
+          </div>
+
+          <!-- litige row 2 -->
+          <div class="px-5 py-4 hover:bg-gray-50/60 transition-colors">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-500 text-[10px] font-bold shrink-0">L2</div>
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-semibold text-gray-800">Contenu non conforme aux directives</p>
+                <p class="text-[10px] text-gray-400 mt-0.5">Litige #1795 · Signaleur: Artisan Café (Entreprise) · Contre: Karim D. (Créateur)</p>
+              </div>
+              <span class="text-xs font-bold text-gray-900 shrink-0">220 € bloqués</span>
+            </div>
+            <p class="text-[10px] text-gray-500 bg-gray-50 p-2.5 rounded-lg mb-3 leading-relaxed">
+              "La vidéo TikTok livrée ne mentionne pas la marque de manière explicite et ne contient pas le lien promotionnel stipulé dans le brief."
+            </p>
+            <div class="flex gap-2">
+              <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20">Arbitrer & Résoudre</button>
+              <button class="text-[10px] font-medium border border-gray-200 text-gray-500 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Voir les messages</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+{% endblock admin_dashboard_content %}

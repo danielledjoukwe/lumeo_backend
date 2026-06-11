@@ -1,0 +1,281 @@
+{% extends "enterprise/dashboard.html" %}
+
+{% block enterprise_container %}
+<main class="flex-1 px-4 md:px-7 py-7 overflow-y-auto">
+
+  <!-- Page header -->
+  <div class="flex items-center gap-3 mb-8">
+    <a href="{% url 'campaign_detail' campaign.pk %}"
+       class="w-8 h-8 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <div>
+      <h1 class="text-lg font-semibold text-gray-900">Modifier la campagne</h1>
+      <p class="text-xs text-gray-400 mt-0.5">{{ campaign.title }}</p>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium
+        {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-100
+        {% else %}bg-red-50 text-red-600 border border-red-100{% endif %}">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form id="edit-form" method="POST" action="{% url 'campaign_edit' campaign.pk %}">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- ── LEFT COLUMN ── -->
+      <div class="lg:col-span-2 space-y-5">
+
+        <!-- Basic info -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Informations générales</p>
+          </div>
+          <div class="px-6 py-5 space-y-4">
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Titre de la campagne <span class="text-red-400">*</span></label>
+              <input type="text" name="title" id="title" required
+                     value="{{ campaign.title }}"
+                     style="padding: 10px 14px;"
+                     class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Description <span class="text-red-400">*</span></label>
+              <textarea name="description" id="description" rows="4" required
+                        style="padding: 10px 14px;"
+                        class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none">{{ campaign.description }}</textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Brief des livrables <span class="text-red-400">*</span></label>
+              <textarea name="deliverables_brief" id="deliverables_brief" rows="3" required
+                        style="padding: 10px 14px;"
+                        class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none">{{ campaign.deliverables_brief }}</textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Budget & deadline -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Budget & Calendrier</p>
+          </div>
+          <div class="px-6 py-5 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Budget global (€) <span class="text-red-400">*</span></label>
+                <div class="relative">
+                  <input type="number" name="budget" id="budget" min="0" step="0.01" required
+                         value="{{ campaign.budget }}"
+                         style="padding: 10px 14px 10px 32px;"
+                         class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">€</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Date limite de candidature <span class="text-red-400">*</span></label>
+                <input type="date" name="deadline" id="deadline" required
+                       value="{{ campaign.deadline|date:'Y-m-d' }}"
+                       style="padding: 10px 14px;"
+                       class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              </div>
+            </div>
+            <div class="w-1/2 pr-2">
+              <label class="block text-xs font-semibold text-gray-700 mb-2">Nombre d'influenceurs recherchés</label>
+              <input type="number" name="max_influencers" id="max_influencers" min="1"
+                     value="{{ campaign.max_influencers }}"
+                     style="padding: 10px 14px;"
+                     class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT COLUMN ── -->
+      <div class="lg:col-span-1 space-y-5">
+
+        <!-- Status -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Statut actuel</p>
+          </div>
+          <div class="px-5 py-4">
+            <select name="status" id="status"
+                    style="padding: 10px 14px;"
+                    class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+              {% for val, label in status_choices %}
+              <option value="{{ val }}" {% if campaign.status == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Target categories -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-50">
+            <p class="text-xs font-semibold text-gray-800">Catégories ciblées</p>
+          </div>
+          <div class="px-5 py-4">
+            <!-- Search input -->
+            <div class="relative mb-3">
+              <input type="text" id="category-search" placeholder="Rechercher une catégorie..." autocomplete="off"
+                     class="w-full text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all px-3 py-2">
+              <div id="category-dropdown" class="absolute z-10 w-full mt-1 bg-white border border-gray-100 rounded-xl shadow-lg hidden max-h-48 overflow-y-auto">
+              </div>
+            </div>
+            
+            <!-- Selected tags container -->
+            <div id="selected-categories" class="flex flex-wrap gap-2">
+            </div>
+            
+            <!-- Hidden container for actual inputs -->
+            <div id="hidden-category-inputs">
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col gap-2">
+          <button type="submit" id="edit-btn"
+                  class="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-xs font-semibold px-5 py-3 rounded-xl shadow-sm shadow-primary/25 transition-colors">
+            <svg id="edit-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+            <svg id="edit-spinner" class="w-3.5 h-3.5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+            <span id="edit-label">Enregistrer les modifications</span>
+          </button>
+          <a href="{% url 'campaign_detail' campaign.pk %}"
+             class="w-full text-center text-xs font-medium text-gray-500 hover:text-gray-700 px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+            Annuler
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+</main>
+
+<script>
+document.getElementById('edit-form').addEventListener('submit', function () {
+  const btn     = document.getElementById('edit-btn');
+  const icon    = document.getElementById('edit-icon');
+  const spinner = document.getElementById('edit-spinner');
+  const label   = document.getElementById('edit-label');
+  btn.disabled      = true;
+  btn.style.opacity = '0.75';
+  icon.classList.add('hidden');
+  spinner.classList.remove('hidden');
+  label.textContent = 'Enregistrement…';
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('category-search');
+  const dropdown = document.getElementById('category-dropdown');
+  const selectedContainer = document.getElementById('selected-categories');
+  const hiddenInputsContainer = document.getElementById('hidden-category-inputs');
+  
+  let selectedCategories = new Map(); // id -> name
+
+  // Initialize with already selected categories
+  {% for cat in campaign.target_categories.all %}
+  selectedCategories.set("{{ cat.id }}", "{{ cat.name|escapejs }}");
+  {% endfor %}
+  renderSelected();
+
+  searchInput.addEventListener('input', function() {
+    const q = this.value.trim();
+    if (q.length < 1) {
+      dropdown.classList.add('hidden');
+      return;
+    }
+    
+    fetch(`{% url 'category_search' %}?q=${encodeURIComponent(q)}`)
+      .then(res => res.json())
+      .then(data => {
+        dropdown.innerHTML = '';
+        if (data.results && data.results.length > 0) {
+          data.results.forEach(cat => {
+            if (selectedCategories.has(cat.id)) return;
+            const div = document.createElement('div');
+            div.className = 'px-3 py-2 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer';
+            div.textContent = cat.name;
+            div.onclick = function() {
+              addCategory(cat.id, cat.name);
+              searchInput.value = '';
+              dropdown.classList.add('hidden');
+            };
+            dropdown.appendChild(div);
+          });
+          if (dropdown.children.length > 0) {
+            dropdown.classList.remove('hidden');
+          } else {
+            dropdown.classList.add('hidden');
+          }
+        } else {
+          const div = document.createElement('div');
+          div.className = 'px-3 py-2 text-xs text-gray-400 italic';
+          div.textContent = 'Aucun résultat';
+          dropdown.appendChild(div);
+          dropdown.classList.remove('hidden');
+        }
+      });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  function addCategory(id, name) {
+    if (selectedCategories.has(id)) return;
+    selectedCategories.set(id, name);
+    renderSelected();
+  }
+
+  function removeCategory(id) {
+    selectedCategories.delete(id);
+    renderSelected();
+  }
+
+  function renderSelected() {
+    selectedContainer.innerHTML = '';
+    hiddenInputsContainer.innerHTML = '';
+    
+    selectedCategories.forEach((name, id) => {
+      const tag = document.createElement('span');
+      tag.className = 'inline-flex items-center gap-1.5 text-[10px] font-medium bg-primary-light text-primary px-2.5 py-1 rounded-full';
+      tag.innerHTML = `${name} <button type="button" class="text-primary hover:text-primary-dark ml-1">&times;</button>`;
+      
+      tag.querySelector('button').onclick = function(e) {
+        e.preventDefault();
+        removeCategory(id);
+      };
+      selectedContainer.appendChild(tag);
+      
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'target_categories';
+      hiddenInput.value = id;
+      hiddenInputsContainer.appendChild(hiddenInput);
+    });
+  }
+});
+</script>
+{% endblock enterprise_container %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lumeo — Connectez votre marque aux bons influenceurs{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="max-w-5xl mx-auto px-4 md:px-6 pt-12 pb-10">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <div class="text-center lg:text-left">
+      <span class="inline-flex items-center gap-1.5 text-xs font-medium text-teal-600 bg-teal-50 border border-teal-100 px-3 py-1 rounded-full mb-5">
+        <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+        La façon intelligente de trouver des influenceurs
+      </span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight mb-4">
+        Connectez votre marque avec
+        <span class="text-teal-600"> le bon influenceur</span>
+      </h1>
+      <p class="text-sm text-gray-500 leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
+        Décrivez votre activité et nous vous mettons en relation avec des influenceurs qui parlent directement à votre audience. Sans approximation, sans démarchage à froid.
+      </p>
+      <div class="flex items-center gap-3 flex-wrap justify-center lg:justify-start">
+        <a href="#" class="text-xs font-medium bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors">Commencer gratuitement</a>
+        <a href="#" class="text-xs font-medium text-gray-600 border border-gray-200 px-4 py-2 rounded-md hover:border-gray-300 transition-colors">Voir comment ça marche</a>
+      </div>
+      <div class="flex items-center gap-3 mt-6 justify-center lg:justify-start">
+        <div class="flex -space-x-2">
+          <img src="{% static 'images/avatar-f1.jpg' %}" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+          <img src="{% static 'images/avatar-m1.jpg' %}" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+          <img src="{% static 'images/avatar-f2.jpg' %}" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+          <img src="{% static 'images/avatar-m2.jpg' %}" class="w-7 h-7 rounded-full border-2 border-white object-cover" alt="user"/>
+        </div>
+        <p class="text-xs text-gray-400">+800 entreprises nous font confiance</p>
+      </div>
+    </div>
+    <div class="hidden lg:flex justify-end">
+      <img src="{% static 'images/hero-illustration.svg' %}" class="w-full max-w-sm" alt="Illustration hero"/>
+    </div>
+  </div>
+</section>
+
+<!-- Stats bar -->
+<section class="border-y border-gray-100 bg-gray-50/60 py-5">
+  <div class="max-w-4xl mx-auto px-4 md:px-6 grid grid-cols-3 divide-x divide-gray-200 text-center">
+    <div class="px-2 sm:px-4">
+      <p class="text-base sm:text-lg font-bold text-gray-900">2 400+</p>
+      <p class="text-xs text-gray-400 mt-0.5">Influenceurs</p>
+    </div>
+    <div class="px-2 sm:px-4">
+      <p class="text-base sm:text-lg font-bold text-gray-900">800+</p>
+      <p class="text-xs text-gray-400 mt-0.5">Entreprises</p>
+    </div>
+    <div class="px-2 sm:px-4">
+      <p class="text-base sm:text-lg font-bold text-gray-900">15+</p>
+      <p class="text-xs text-gray-400 mt-0.5">Niches</p>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="max-w-5xl mx-auto px-4 md:px-6 py-14">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Comment ça marche</p>
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Trois étapes pour trouver votre match parfait</h2>
+      <div class="flex flex-col gap-3">
+
+        <div class="flex items-start gap-3 bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:border-teal-200 hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-teal-600 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded mb-1 inline-block">01</span>
+            <h3 class="text-sm font-semibold text-gray-800 mb-0.5">Créez votre profil</h3>
+            <p class="text-xs text-gray-500 leading-relaxed">Inscrivez-vous et décrivez votre marque, votre niche et votre audience cible.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:border-teal-200 hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-teal-600 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded mb-1 inline-block">02</span>
+            <h3 class="text-sm font-semibold text-gray-800 mb-0.5">Recevez vos suggestions</h3>
+            <p class="text-xs text-gray-500 leading-relaxed">Notre système vous propose des influenceurs qui opèrent dans votre domaine.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-3 bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:border-teal-200 hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-teal-600 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded mb-1 inline-block">03</span>
+            <h3 class="text-sm font-semibold text-gray-800 mb-0.5">Lancez la collaboration</h3>
+            <p class="text-xs text-gray-500 leading-relaxed">Envoyez une demande et gérez tout depuis votre tableau de bord.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="hidden lg:flex justify-center">
+      <img src="{% static 'images/followers-illustration.svg' %}" class="w-full max-w-xs" alt="Followers illustration"/>
+    </div>
+  </div>
+</section>
+
+<!-- Featured influencers -->
+<section class="bg-gray-50/60 border-y border-gray-100 py-12">
+  <div class="max-w-5xl mx-auto px-4 md:px-6">
+    <div class="text-center mb-7">
+      <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Influenceurs en vedette</p>
+      <h2 class="text-xl font-bold text-gray-900">Des créateurs prêts à collaborer</h2>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {% for influencer in featured_influencers %}
+      <div class="bg-white border border-gray-100 rounded-xl p-4 text-center hover:border-teal-200 hover:shadow-sm transition-all">
+        <img src="{% static influencer.avatar %}" class="w-12 h-12 rounded-full object-cover mx-auto mb-3 border-2 border-teal-50" alt="{{ influencer.name }}"/>
+        <p class="text-xs font-semibold text-gray-800">{{ influencer.name }}</p>
+        <p class="text-xs text-teal-600 mb-1">{{ influencer.niche }}</p>
+        <p class="text-xs text-gray-400">{{ influencer.followers }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="max-w-5xl mx-auto px-4 md:px-6 py-12">
+  <div class="text-center mb-7">
+    <p class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Niches</p>
+    <h2 class="text-xl font-bold text-gray-900">Tous les secteurs, couverts</h2>
+  </div>
+  <div class="flex flex-wrap justify-center gap-2">
+    {% for category in categories %}
+    <span class="text-xs font-medium text-gray-600 bg-white border border-gray-200 px-3 py-1.5 rounded-full hover:border-teal-300 hover:text-teal-600 transition-colors cursor-pointer">{{ category }}</span>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="max-w-5xl mx-auto px-4 md:px-6 pb-10">
+  <div class="bg-teal-600 rounded-2xl px-6 sm:px-10 py-10 text-center relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-40 h-40 bg-teal-500 rounded-full -translate-y-1/2 translate-x-1/2 opacity-40"></div>
+    <div class="absolute bottom-0 left-0 w-28 h-28 bg-teal-700 rounded-full translate-y-1/2 -translate-x-1/2 opacity-40"></div>
+    <div class="relative z-10">
+      <h2 class="text-lg sm:text-xl font-bold text-white mb-2">Prêt à faire grandir votre marque ?</h2>
+      <p class="text-xs sm:text-sm text-teal-100 mb-6 max-w-sm mx-auto">Rejoignez des centaines d'entreprises qui trouvent déjà leur influenceur idéal sur {{ APP_NAME }}.</p>
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <a href="#" class="text-xs font-medium bg-white text-teal-600 px-4 py-2 rounded-md hover:bg-teal-50 transition-colors">Créer un compte entreprise</a>
+        <a href="#" class="text-xs font-medium text-white border border-teal-400 px-4 py-2 rounded-md hover:bg-teal-500 transition-colors">Rejoindre en tant qu'influenceur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

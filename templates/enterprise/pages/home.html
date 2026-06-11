@@ -1,0 +1,397 @@
+{% extends "enterprise/dashboard.html" %}
+
+{% block enterprise_container %}
+<main class="flex-1 px-4 md:px-7 py-7 overflow-y-auto">
+
+  <!-- Greeting + CTA -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-lg font-semibold text-gray-900">Bonjour, {{ user.first_name }} 👋</h1>
+      <p class="text-xs text-gray-400 mt-0.5">Voici un aperçu de vos activités — dimanche 17 mai 2026</p>
+    </div>
+    <button class="self-start sm:self-auto inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-sm shadow-primary/25 transition-colors">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+      Nouvelle campagne
+    </button>
+  </div>
+
+  <!-- ── STAT CARDS ──────────────────────────────────── -->
+  <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-7">
+
+    <!-- Campagnes actives -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+          </svg>
+        </div>
+        <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+          <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 10l7-7 7 7M5 19l7-7 7 7"/></svg>
+          +1
+        </span>
+      </div>
+      <p class="text-2xl font-semibold text-gray-900 mb-0.5">4</p>
+      <p class="text-[11px] text-gray-400 font-medium">Campagnes actives</p>
+    </div>
+
+    <!-- En attente -->
+    <div class="bg-white rounded-2xl border border-amber-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 9v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span class="inline-flex items-center text-[10px] font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">
+          Urgent
+        </span>
+      </div>
+      <p class="text-2xl font-semibold text-gray-900 mb-0.5">2</p>
+      <p class="text-[11px] text-gray-400 font-medium">Approbations requises</p>
+    </div>
+
+    <!-- Budget -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-2xl font-semibold text-gray-900 mb-0.5">3 200 €</p>
+      <p class="text-[11px] text-gray-400 font-medium">Dépensé ce mois</p>
+      <!-- progress -->
+      <div class="mt-3">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[9px] text-gray-400">Budget: 8 000 €</span>
+          <span class="text-[9px] font-semibold text-violet-600">40%</span>
+        </div>
+        <div class="h-1 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full bg-violet-400 rounded-full" style="width: 40%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <span class="w-5 h-5 flex items-center justify-center bg-primary text-white text-[9px] font-bold rounded-full">3</span>
+      </div>
+      <p class="text-2xl font-semibold text-gray-900 mb-0.5">3</p>
+      <p class="text-[11px] text-gray-400 font-medium">Messages non lus</p>
+    </div>
+
+  </div>
+
+  <!-- ── TWO-COLUMN ROW ───────────────────────────────── -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-7">
+
+    <!-- Approvals (3/5) -->
+    <div class="lg:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold text-gray-800">Contenus à approuver</span>
+          <span class="bg-amber-100 text-amber-600 text-[9px] font-bold rounded-full px-1.5 py-0.5">2</span>
+        </div>
+        <a href="#" class="text-[11px] text-primary font-medium hover:underline">Voir tout →</a>
+      </div>
+
+      <!-- Row -->
+      <div class="divide-y divide-gray-50">
+        <div class="flex items-center gap-3.5 px-5 py-4 hover:bg-gray-50/60 transition-colors">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 shrink-0 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">SM</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold text-gray-800 truncate">Sophie M.</p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Campagne Mode Été · Reel Instagram · Il y a 2h</p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button class="text-[10px] font-medium border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Voir</button>
+            <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20">Approuver</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3.5 px-5 py-4 hover:bg-gray-50/60 transition-colors">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 shrink-0 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">KD</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold text-gray-800 truncate">Karim D.</p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Campagne Tech Q2 · Vidéo YouTube · Il y a 5h</p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button class="text-[10px] font-medium border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Voir</button>
+            <button class="text-[10px] font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20">Approuver</button>
+          </div>
+        </div>
+
+        <div class="px-5 py-5 flex flex-col items-center justify-center gap-1.5 text-center">
+          <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <p class="text-[10px] text-gray-300 font-medium">Pas d'autres soumissions en attente</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages (2/5) -->
+    <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50 shrink-0">
+        <span class="text-xs font-semibold text-gray-800">Messages récents</span>
+        <a href="#" class="text-[11px] text-primary font-medium hover:underline">Ouvrir →</a>
+      </div>
+      <div class="divide-y divide-gray-50 flex-1">
+        <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/60 cursor-pointer transition-colors">
+          <div class="relative shrink-0">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-[9px] font-bold">SM</div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white"></span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold text-gray-800">Sophie M.</p>
+            <p class="text-[10px] text-gray-400 truncate">Ok je vous envoie le draft…</p>
+          </div>
+          <div class="flex flex-col items-end gap-1 shrink-0">
+            <span class="text-[9px] text-gray-400">2h</span>
+            <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/60 cursor-pointer transition-colors">
+          <div class="relative shrink-0">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center text-white text-[9px] font-bold">KD</div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white"></span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold text-gray-800">Karim D.</p>
+            <p class="text-[10px] text-gray-400 truncate">Merci pour le brief, c'est parfait</p>
+          </div>
+          <div class="flex flex-col items-end gap-1 shrink-0">
+            <span class="text-[9px] text-gray-400">5h</span>
+            <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50/60 cursor-pointer transition-colors">
+          <div class="relative shrink-0">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center text-white text-[9px] font-bold">LR</div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-gray-300 rounded-full border-2 border-white"></span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold text-gray-800">Léa R.</p>
+            <p class="text-[10px] text-gray-400 truncate">Est-ce que je peux modifier…</p>
+          </div>
+          <div class="flex flex-col items-end gap-1 shrink-0">
+            <span class="text-[9px] text-gray-400">1j</span>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-3 border-t border-gray-50 shrink-0">
+        <button class="w-full text-center text-[10px] font-semibold text-primary hover:text-primary-dark transition-colors">
+          Voir toute la messagerie
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTIVE CAMPAIGNS TABLE ───────────────────────── -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm mb-7 overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+      <div>
+        <span class="text-xs font-semibold text-gray-800">Campagnes actives</span>
+        <p class="text-[10px] text-gray-400 mt-0.5">Suivi de vos collaborations en cours</p>
+      </div>
+      <a href="#" class="inline-flex items-center gap-1.5 text-[11px] text-primary font-medium hover:underline">
+        Gérer tout →
+      </a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="text-[10px] text-gray-400 uppercase tracking-wider bg-gray-50/60">
+            <th class="text-left px-5 py-3 font-semibold">Campagne</th>
+            <th class="text-left px-5 py-3 font-semibold hidden sm:table-cell">Influenceur</th>
+            <th class="text-left px-5 py-3 font-semibold hidden md:table-cell">Plateforme</th>
+            <th class="text-left px-5 py-3 font-semibold">Statut</th>
+            <th class="text-left px-5 py-3 font-semibold hidden md:table-cell">Deadline</th>
+            <th class="text-left px-5 py-3 font-semibold hidden lg:table-cell">Progression</th>
+            <th class="px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 text-xs">
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="px-5 py-4">
+              <p class="font-semibold text-gray-800">Mode Été 2026</p>
+              <p class="text-[10px] text-gray-400 mt-0.5">Budget: 1 200 €</p>
+            </td>
+            <td class="px-5 py-4 hidden sm:table-cell">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0">SM</div>
+                <span class="text-gray-600 text-[11px]">Sophie M.</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 hidden md:table-cell">
+              <span class="inline-flex items-center gap-1 text-[10px] text-gray-500 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-lg">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/></svg>
+                Instagram
+              </span>
+            </td>
+            <td class="px-5 py-4">
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>En cours
+              </span>
+            </td>
+            <td class="px-5 py-4 text-[11px] text-gray-400 hidden md:table-cell">25 mai</td>
+            <td class="px-5 py-4 hidden lg:table-cell">
+              <div class="flex items-center gap-2">
+                <div class="h-1.5 bg-gray-100 rounded-full flex-1 overflow-hidden">
+                  <div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+                </div>
+                <span class="text-[9px] text-gray-400 shrink-0">65%</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 text-right">
+              <a href="#" class="text-[10px] font-semibold text-primary hover:underline">Voir →</a>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="px-5 py-4">
+              <p class="font-semibold text-gray-800">Campagne Tech Q2</p>
+              <p class="text-[10px] text-gray-400 mt-0.5">Budget: 1 800 €</p>
+            </td>
+            <td class="px-5 py-4 hidden sm:table-cell">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-teal-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0">KD</div>
+                <span class="text-gray-600 text-[11px]">Karim D.</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 hidden md:table-cell">
+              <span class="inline-flex items-center gap-1 text-[10px] text-gray-500 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-lg">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/></svg>
+                YouTube
+              </span>
+            </td>
+            <td class="px-5 py-4">
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>Contenu reçu
+              </span>
+            </td>
+            <td class="px-5 py-4 text-[11px] text-gray-400 hidden md:table-cell">28 mai</td>
+            <td class="px-5 py-4 hidden lg:table-cell">
+              <div class="flex items-center gap-2">
+                <div class="h-1.5 bg-gray-100 rounded-full flex-1 overflow-hidden">
+                  <div class="h-full bg-amber-400 rounded-full" style="width: 85%"></div>
+                </div>
+                <span class="text-[9px] text-gray-400 shrink-0">85%</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 text-right">
+              <a href="#" class="text-[10px] font-semibold text-primary hover:underline">Voir →</a>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="px-5 py-4">
+              <p class="font-semibold text-gray-800">Fitness Printemps</p>
+              <p class="text-[10px] text-gray-400 mt-0.5">Budget: 600 €</p>
+            </td>
+            <td class="px-5 py-4 hidden sm:table-cell">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center text-white text-[8px] font-bold shrink-0">LR</div>
+                <span class="text-gray-600 text-[11px]">Léa R.</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 hidden md:table-cell">
+              <span class="inline-flex items-center gap-1 text-[10px] text-gray-500 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-lg">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-2.88 2.542 2.896 2.896 0 0 1-2.895-2.895 2.896 2.896 0 0 1 2.895-2.895c.28 0 .54.04.79.1V9.01a6.325 6.325 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.91a8.164 8.164 0 0 0 4.77 1.52V7a4.785 4.785 0 0 1-1.015-.314z"/></svg>
+                TikTok
+              </span>
+            </td>
+            <td class="px-5 py-4">
+              <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>En attente
+              </span>
+            </td>
+            <td class="px-5 py-4 text-[11px] text-gray-400 hidden md:table-cell">2 juin</td>
+            <td class="px-5 py-4 hidden lg:table-cell">
+              <div class="flex items-center gap-2">
+                <div class="h-1.5 bg-gray-100 rounded-full flex-1 overflow-hidden">
+                  <div class="h-full bg-gray-300 rounded-full" style="width: 20%"></div>
+                </div>
+                <span class="text-[9px] text-gray-400 shrink-0">20%</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 text-right">
+              <a href="#" class="text-[10px] font-semibold text-primary hover:underline">Voir →</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SUGGESTED INFLUENCERS ───────────────────────── -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+      <div>
+        <span class="text-xs font-semibold text-gray-800">Influenceurs suggérés</span>
+        <p class="text-[10px] text-gray-400 mt-0.5">Sélectionnés selon vos campagnes précédentes</p>
+      </div>
+      <a href="#" class="text-[11px] text-primary font-medium hover:underline">Découvrir plus →</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-50">
+
+      {% for creator in suggested %}
+      {% empty %}
+
+      {% for i in "1234" %}
+      <div class="p-5 hover:bg-gray-50/50 transition-colors group">
+        <!-- Avatar + name -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm
+              {% cycle 'bg-gradient-to-br from-purple-400 to-pink-500' 'bg-gradient-to-br from-blue-400 to-teal-500' 'bg-gradient-to-br from-orange-400 to-yellow-400' 'bg-gradient-to-br from-green-400 to-teal-400' %}">
+              {% cycle 'SM' 'KD' 'LR' 'MT' %}
+            </div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white"></span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-gray-800 truncate">{% cycle 'Sophie M.' 'Karim D.' 'Léa R.' 'Marc T.' %}</p>
+            <p class="text-[10px] text-gray-400">{% cycle 'Mode & Lifestyle' 'Tech & Gadgets' 'Fitness & Sport' 'Food & Travel' %}</p>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <div class="bg-gray-50 rounded-xl p-2.5">
+            <p class="text-[9px] text-gray-400 mb-0.5">Abonnés</p>
+            <p class="text-xs font-semibold text-gray-700">{% cycle '120k' '85k' '200k' '60k' %}</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-2.5">
+            <p class="text-[9px] text-gray-400 mb-0.5">Engagement</p>
+            <p class="text-xs font-semibold text-emerald-600">{% cycle '4.2%' '3.8%' '6.1%' '5.4%' %}</p>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1 mb-4">
+          <span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-md">{% cycle '#mode' '#tech' '#fitness' '#food' %}</span>
+          <span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-md">{% cycle '#lifestyle' '#review' '#sport' '#travel' %}</span>
+        </div>
+
+        <button class="w-full text-center text-[10px] font-semibold border border-primary/30 text-primary px-3 py-2 rounded-xl hover:bg-primary hover:text-white transition-all duration-200">
+          Inviter à collaborer
+        </button>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+
+</main>
+{% endblock enterprise_container %}
