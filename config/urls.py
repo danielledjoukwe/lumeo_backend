@@ -19,6 +19,8 @@ urlpatterns = [
     path('collaborations/', include('collaborations.urls')),
     path('dashboard/admin/', include('adminpanel.urls')),
     path('dashboard/admin/home', admin_home, name='admin_home'),
+    path('api/threads/', include('messaging.urls')),
+    path('api/dashboard/', include('dashboard.urls')),
 ]
 
 if settings.DEBUG:

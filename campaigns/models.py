@@ -36,6 +36,7 @@ class Campaign(models.Model):
         help_text="Ex : 1 Reel Instagram, 2 Stories, 1 vidéo YouTube…",
     )
     budget   = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Budget global (€)")
+    duration = models.CharField(max_length=100, blank=True, null=True, verbose_name="Durée", help_text="Ex: 2 semaines, 1 mois, etc.")
     deadline = models.DateField(verbose_name="Date limite de candidature")
 
     # Defaults to 'draft' — must be explicitly published.

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from authentication.serializers import UserSerializer
-from campaigns.serializers import CampaignPublicListSerializer
+from campaigns.serializers import CampaignPublicListSerializer, CampaignPublicDetailSerializer
 from .models import Application
 
 
@@ -60,6 +60,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     status_label  = serializers.CharField(source='get_status_display', read_only=True)
     can_be_reviewed  = serializers.BooleanField(read_only=True)
     can_be_withdrawn = serializers.BooleanField(read_only=True)
+    thread_id        = serializers.UUIDField(source='thread.id', read_only=True)
 
     class Meta:
         model  = Application
@@ -70,7 +71,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             'status', 'status_label',
             'enterprise_note',
             'can_be_reviewed', 'can_be_withdrawn',
-            'applied_at', 'reviewed_at',
+            'applied_at', 'reviewed_at', 'thread_id',
         ]
 
 
@@ -79,22 +80,25 @@ class ApplicationInfluencerSerializer(serializers.ModelSerializer):
     Read serializer for the influencer's own view of their applications.
     Includes campaign info, hides internal enterprise fields.
     """
-    campaign     = CampaignPublicListSerializer(read_only=True)
+    campaign     = CampaignPublicDetailSerializer(read_only=True)
     status_label = serializers.CharField(source='get_status_display', read_only=True)
+    origin_label = serializers.CharField(source='get_origin_display', read_only=True)
     can_be_withdrawn = serializers.BooleanField(read_only=True)
+    can_be_reviewed  = serializers.BooleanField(read_only=True)
     company_name = serializers.CharField(source='campaign.business.company_name', read_only=True)
     is_verified  = serializers.BooleanField(source='campaign.business.is_verified', read_only=True)
+    thread_id    = serializers.UUIDField(source='thread.id', read_only=True)
 
     class Meta:
         model  = Application
         fields = [
-            'id',
+            'id', 'origin', 'origin_label',
             'campaign', 'company_name', 'is_verified',
             'cover_message', 'proposed_rate',
             'status', 'status_label',
             'enterprise_note',
-            'can_be_withdrawn',
-            'applied_at', 'accepted_at', 'reviewed_at',
+            'can_be_withdrawn', 'can_be_reviewed',
+            'applied_at', 'accepted_at', 'reviewed_at', 'thread_id',
         ]
 
 

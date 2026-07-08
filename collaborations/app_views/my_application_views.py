@@ -21,8 +21,6 @@ from collaborations.serializers import (
     ApplicationCreateSerializer,
 )
 
-# A mission is simply an accepted application
-MISSION_STATUSES = ('accepted',)
 
 
 def _get_influencer(request):
@@ -90,10 +88,11 @@ def apply_to_campaign(request, campaign_pk):
 @permission_classes([IsAuthenticated])
 def my_application_list(request):
     """
-    List all applications submitted by the authenticated influencer.
+    List all applications & invitations for the authenticated influencer.
 
     Supports:
       ?status=<str>     — filter by status
+      ?origin=<str>     — filter by origin ('influencer' or 'partner')
       ?page=&page_size= — pagination
     """
     error = check_access(request, roles=['influencer'])
@@ -108,6 +107,10 @@ def my_application_list(request):
     status_filter = request.query_params.get('status', '').strip()
     if status_filter:
         applications = applications.filter(status=status_filter)
+
+    origin_filter = request.query_params.get('origin', '').strip()
+    if origin_filter in ('influencer', 'partner'):
+        applications = applications.filter(origin=origin_filter)
 
     return paginate_queryset(request, applications, ApplicationInfluencerSerializer)
 
@@ -130,7 +133,69 @@ def my_application_detail(request, pk):
     )
 
 
-# ── Withdraw an application ───────────────────────────────────────────────────
+# ── Respond to an invitation ──────────────────────────────────────────────────
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def accept_invitation(request, pk):
+    """
+    Influencer accepts a pending invitation sent by a partner.
+    Sets status → 'accepted' and records accepted_at.
+    """
+    error = check_access(request, roles=['influencer'])
+    if error:
+        return error
+
+    influencer = _get_influencer(request)
+    invitation = get_object_or_404(
+        Application, pk=pk, influencer=influencer, origin='partner'
+    )
+
+    if not invitation.can_be_reviewed:
+        return Response(
+            {"error": "Seules les invitations en attente peuvent être acceptées."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    invitation.status      = 'accepted'
+    invitation.accepted_at = timezone.now()
+    invitation.reviewed_at = timezone.now()
+    invitation.save(update_fields=['status', 'accepted_at', 'reviewed_at', 'updated_at'])
+
+    return Response(
+        ApplicationInfluencerSerializer(invitation, context={'request': request}).data
+    )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def reject_invitation(request, pk):
+    """
+    Influencer rejects a pending invitation.
+    Sets status → 'rejected'.
+    """
+    error = check_access(request, roles=['influencer'])
+    if error:
+        return error
+
+    influencer = _get_influencer(request)
+    invitation = get_object_or_404(
+        Application, pk=pk, influencer=influencer, origin='partner'
+    )
+
+    if not invitation.can_be_reviewed:
+        return Response(
+            {"error": "Seules les invitations en attente peuvent être refusées."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    invitation.status      = 'rejected'
+    invitation.reviewed_at = timezone.now()
+    invitation.save(update_fields=['status', 'reviewed_at', 'updated_at'])
+
+    return Response(
+        ApplicationInfluencerSerializer(invitation, context={'request': request}).data
+    )# ── Withdraw an application ───────────────────────────────────────────────────
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -160,60 +225,3 @@ def withdraw_application(request, pk):
         ApplicationInfluencerSerializer(application, context={'request': request}).data
     )
 
-
-# ── Missions (accepted / in_progress / completed applications) ────────────────
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def my_mission_list(request):
-    """
-    List all missions for the authenticated influencer.
-    A mission is an application that has been accepted.
-
-    Supports:
-      ?page=&page_size= — pagination
-    """
-    error = check_access(request, roles=['influencer'])
-    if error:
-        return error
-
-    influencer = _get_influencer(request)
-    missions   = Application.objects.filter(
-        influencer=influencer,
-        status__in=MISSION_STATUSES,
-    ).select_related(
-        'campaign',
-        'campaign__business',
-        'campaign__business__user',
-    ).prefetch_related('campaign__campaign_categories__category')
-
-    status_filter = request.query_params.get('status', '').strip()
-    if status_filter and status_filter in MISSION_STATUSES:
-        missions = missions.filter(status=status_filter)
-
-    missions = missions.order_by('-accepted_at')
-
-    return paginate_queryset(request, missions, ApplicationInfluencerSerializer)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def my_mission_detail(request, pk):
-    """
-    Retrieve the detail of a single mission.
-    The application must belong to the influencer and be in a mission status.
-    """
-    error = check_access(request, roles=['influencer'])
-    if error:
-        return error
-
-    influencer = _get_influencer(request)
-    mission    = get_object_or_404(
-        Application,
-        pk=pk,
-        influencer=influencer,
-        status__in=MISSION_STATUSES,
-    )
-    return Response(
-        ApplicationInfluencerSerializer(mission, context={'request': request}).data
-    )

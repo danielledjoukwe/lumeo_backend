@@ -101,6 +101,7 @@ def my_campaign_create(request):
         description        = data['description'],
         deliverables_brief = data['deliverables_brief'],
         budget             = data['budget'],
+        duration           = data.get('duration', ''),
         deadline           = data['deadline'],
         status             = 'draft',
     )
@@ -159,7 +160,7 @@ def my_campaign_edit(request, pk):
 
     data = serializer.validated_data
 
-    editable_fields = ['title', 'description', 'deliverables_brief', 'budget', 'deadline']
+    editable_fields = ['title', 'description', 'deliverables_brief', 'budget', 'duration', 'deadline']
     for field in editable_fields:
         if field in data:
             setattr(campaign, field, data[field])

@@ -10,7 +10,7 @@ class CampaignCategoryInline(admin.TabularInline):
 
 @admin.register(Campaign)
 class CampaignAdmin(admin.ModelAdmin):
-    list_display  = ('title', 'business', 'status', 'budget', 'deadline', 'created_at')
+    list_display  = ('title', 'business', 'status', 'budget', 'duration', 'deadline', 'created_at')
     list_filter   = ('status',)
     search_fields = ('title', 'business__company_name')
     readonly_fields = ('id', 'created_at', 'updated_at')

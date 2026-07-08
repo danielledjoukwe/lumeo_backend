@@ -66,6 +66,7 @@ def campaign_create(request):
         description        = request.POST.get('description', '').strip()
         deliverables_brief = request.POST.get('deliverables_brief', '').strip()
         budget             = request.POST.get('budget', '').strip()
+        duration           = request.POST.get('duration', '').strip()
         deadline           = request.POST.get('deadline', '').strip()
         max_influencers    = request.POST.get('max_influencers', '1').strip()
         category_ids       = request.POST.getlist('target_categories')
@@ -97,6 +98,7 @@ def campaign_create(request):
                 description        = description,
                 deliverables_brief = deliverables_brief,
                 budget             = budget,
+                duration           = duration,
                 deadline           = deadline,
                 max_influencers    = int(max_influencers) if max_influencers.isdigit() else 1,
                 status             = status,
@@ -153,6 +155,7 @@ def campaign_edit(request, pk):
         description        = request.POST.get('description', '').strip()
         deliverables_brief = request.POST.get('deliverables_brief', '').strip()
         budget             = request.POST.get('budget', '').strip()
+        duration           = request.POST.get('duration', '').strip()
         deadline           = request.POST.get('deadline', '').strip()
         max_influencers    = request.POST.get('max_influencers', '1').strip()
         category_ids       = request.POST.getlist('target_categories')
@@ -180,6 +183,7 @@ def campaign_edit(request, pk):
             campaign.description        = description
             campaign.deliverables_brief = deliverables_brief
             campaign.budget             = budget
+            campaign.duration           = duration
             campaign.deadline           = deadline
             campaign.max_influencers    = int(max_influencers) if max_influencers.isdigit() else 1
             campaign.status             = status

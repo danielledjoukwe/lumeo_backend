@@ -55,7 +55,7 @@ def campaign_application_list(request, campaign_pk):
         return error
 
     campaign     = _get_own_campaign(request, campaign_pk)
-    applications = Application.objects.filter(campaign=campaign).select_related(
+    applications = Application.objects.filter(campaign=campaign, origin='influencer').select_related(
         'influencer', 'influencer__user',
     ).prefetch_related(
         'influencer__platforms',
@@ -80,10 +80,57 @@ def campaign_application_detail(request, campaign_pk, pk):
         return error
 
     campaign    = _get_own_campaign(request, campaign_pk)
-    application = get_object_or_404(Application, pk=pk, campaign=campaign)
+    application = get_object_or_404(Application, pk=pk, campaign=campaign, origin='influencer')
 
     return Response(
         ApplicationSerializer(application, context={'request': request}).data
+    )
+
+
+# ── Direct invitations sent for a campaign ─────────────────────────────────────
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def campaign_invitation_list(request, campaign_pk):
+    """
+    List all direct invitations sent to influencers for one of the enterprise's campaigns.
+
+    Supports:
+      ?status=<str>     — filter by status (pending, accepted, rejected…)
+      ?page=&page_size= — pagination
+    """
+    error = check_access(request, roles=['business'])
+    if error:
+        return error
+
+    campaign    = _get_own_campaign(request, campaign_pk)
+    invitations = Application.objects.filter(campaign=campaign, origin='partner').select_related(
+        'influencer', 'influencer__user',
+    ).prefetch_related(
+        'influencer__platforms',
+        'influencer__categories',
+    )
+
+    status_filter = request.query_params.get('status', '').strip()
+    if status_filter:
+        invitations = invitations.filter(status=status_filter)
+
+    return paginate_queryset(request, invitations, ApplicationSerializer)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def campaign_invitation_detail(request, campaign_pk, pk):
+    """Retrieve details of a single sent invitation for one of the enterprise's campaigns."""
+    error = check_access(request, roles=['business'])
+    if error:
+        return error
+
+    campaign   = _get_own_campaign(request, campaign_pk)
+    invitation = get_object_or_404(Application, pk=pk, campaign=campaign, origin='partner')
+
+    return Response(
+        ApplicationSerializer(invitation, context={'request': request}).data
     )
 
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import InfluencerProfile, BusinessProfile, SocialPlatform
+from .models import InfluencerProfile, BusinessProfile, SocialPlatform, VerificationDocument
 from categories.serializers import CategorySerializer
 
 User = get_user_model()
@@ -72,15 +72,33 @@ class InfluencerProfileUpdateSerializer(serializers.Serializer):
         return value
 
 
-# ── Business profile ──────────────────────────────────────────────────────────
+# ── Business profile & Verification ──────────────────────────────────────────
+
+class VerificationDocumentSerializer(serializers.ModelSerializer):
+    """Serializer for verification documents."""
+    class Meta:
+        model = VerificationDocument
+        fields = ['id', 'document_name', 'file', 'uploaded_at']
+        read_only_fields = ['id', 'uploaded_at']
+
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
     """Read serializer — full nested representation."""
     user = UserPublicSerializer(read_only=True)
+    verification_documents = VerificationDocumentSerializer(many=True, read_only=True)
+    account_type_label = serializers.CharField(source='get_account_type_display', read_only=True)
+    verification_status_label = serializers.CharField(source='get_verification_status_display', read_only=True)
 
     class Meta:
         model = BusinessProfile
-        fields = ['id', 'user', 'company_name', 'industry', 'website', 'description', 'is_verified', 'created_at', 'updated_at']
+        fields = [
+            'id', 'user', 'company_name', 'industry', 'website', 'description',
+            'is_verified', 'created_at', 'updated_at',
+            'account_type', 'account_type_label', 'niu',
+            'verification_status', 'verification_status_label',
+            'verification_note', 'verification_requested_at', 'verification_reviewed_at',
+            'verification_documents'
+        ]
 
 
 class BusinessProfileUpdateSerializer(serializers.Serializer):
@@ -98,3 +116,7 @@ class BusinessProfileUpdateSerializer(serializers.Serializer):
     industry     = serializers.CharField(max_length=100, required=False, allow_blank=True)
     website      = serializers.URLField(required=False, allow_blank=True)
     description  = serializers.CharField(required=False, allow_blank=True)
+
+    # Verification fields that can be updated before submission
+    account_type = serializers.ChoiceField(choices=BusinessProfile.ACCOUNT_TYPE_CHOICES, required=False)
+    niu          = serializers.CharField(max_length=50, required=False, allow_blank=True, allow_null=True)

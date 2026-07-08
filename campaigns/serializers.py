@@ -49,7 +49,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'business_name',
             'title', 'description', 'deliverables_brief',
-            'budget', 'deadline', 'status', 'status_label',
+            'budget', 'duration', 'deadline', 'status', 'status_label',
             'categories',
             'created_at', 'updated_at',
         ]
@@ -61,6 +61,7 @@ class CampaignWriteSerializer(serializers.Serializer):
     description        = serializers.CharField()
     deliverables_brief = serializers.CharField()
     budget             = serializers.DecimalField(max_digits=10, decimal_places=2)
+    duration           = serializers.CharField(max_length=100, required=False, allow_blank=True, allow_null=True)
     deadline           = serializers.DateField()
     category_ids       = serializers.ListField(
         child=serializers.UUIDField(), required=False, default=list
@@ -87,7 +88,7 @@ class CampaignPublicListSerializer(serializers.ModelSerializer):
             'id',
             'company_name', 'industry', 'is_verified',
             'title', 'deliverables_brief',
-            'budget', 'deadline', 'status', 'status_label',
+            'budget', 'duration', 'deadline', 'status', 'status_label',
             'categories',
             'created_at',
         ]
@@ -110,7 +111,7 @@ class CampaignPublicDetailSerializer(serializers.ModelSerializer):
             'id',
             'business',
             'title', 'description', 'deliverables_brief',
-            'budget', 'deadline', 'status', 'status_label',
+            'budget', 'duration', 'deadline', 'status', 'status_label',
             'categories',
             'created_at',
         ]
