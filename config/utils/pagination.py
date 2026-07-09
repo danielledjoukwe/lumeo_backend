@@ -19,7 +19,7 @@ def paginate_queryset(request, queryset, serializer_class):
     total_count = queryset.count()
     paginated_qs = queryset[start:end]
 
-    serializer = serializer_class(paginated_qs, many=True)
+    serializer = serializer_class(paginated_qs, many=True, context={'request': request})
 
     return Response(
         {

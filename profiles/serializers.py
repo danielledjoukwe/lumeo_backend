@@ -10,10 +10,20 @@ User = get_user_model()
 
 class UserPublicSerializer(serializers.ModelSerializer):
     """Minimal user info exposed on profiles."""
+    avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'username', 'avatar', 'phone', 'city', 'country']
         read_only_fields = ['id', 'email']
+
+    def get_avatar(self, obj):
+        if not obj.avatar:
+            return None
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.avatar.url)
+        return obj.avatar.url
 
 
 # ── Social platforms ──────────────────────────────────────────────────────────

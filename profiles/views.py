@@ -1,5 +1,6 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -25,11 +26,12 @@ def influencer_profile_detail(request):
 
     user = request._db_user
     profile, _ = InfluencerProfile.objects.get_or_create(user=user)
-    return Response(InfluencerProfileSerializer(profile).data)
+    return Response(InfluencerProfileSerializer(profile, context={'request': request}).data)
 
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
 def influencer_profile_edit(request):
     error = check_access(request, roles=['influencer'])
     if error:
@@ -57,7 +59,7 @@ def influencer_profile_edit(request):
     if 'category_ids' in data:
         profile.categories.set(Category.objects.filter(id__in=data['category_ids']))
 
-    return Response(InfluencerProfileSerializer(profile).data)
+    return Response(InfluencerProfileSerializer(profile, context={'request': request}).data)
 
 
 # ── Influencer Social Platforms ───────────────────────────────────────────────
@@ -137,11 +139,12 @@ def business_profile_detail(request):
         return error
 
     profile, _ = BusinessProfile.objects.get_or_create(user=request._db_user)
-    return Response(BusinessProfileSerializer(profile).data)
+    return Response(BusinessProfileSerializer(profile, context={'request': request}).data)
 
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
 def business_profile_edit(request):
     error = check_access(request, roles=['business'])
     if error:
@@ -167,7 +170,7 @@ def business_profile_edit(request):
             setattr(profile, field, data[field])
     profile.save()
 
-    return Response(BusinessProfileSerializer(profile).data)
+    return Response(BusinessProfileSerializer(profile, context={'request': request}).data)
 
 
 # ── Influencer Discovery (partner side) ──────────────────────────────────────
@@ -245,4 +248,4 @@ def influencer_public_detail(request, pk):
         InfluencerProfile.objects.select_related('user').prefetch_related('categories', 'platforms'),
         pk=pk,
     )
-    return Response(InfluencerProfileSerializer(profile).data)
+    return Response(InfluencerProfileSerializer(profile, context={'request': request}).data)
